@@ -18,6 +18,6 @@ client_secret*.json
 secrets.*
 venv/
 env/
-data/*
-!data/.gitkeep
+**/data/*
+!**/data/.gitkeep
 .DS_Store

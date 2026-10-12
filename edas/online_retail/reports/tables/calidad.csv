@@ -1,0 +1,9 @@
+columna,tipo,faltantes,porcentaje_faltantes,distintos
+InvoiceNo,string,0,0.0,25900
+StockCode,string,0,0.0,4070
+Description,object,1454,0.2683107311375157,4223
+Quantity,int64,0,0.0,722
+InvoiceDate,datetime64[ns],0,0.0,23260
+UnitPrice,float64,0,0.0,1630
+CustomerID,string,135080,24.926694334288598,4372
+Country,object,0,0.0,38

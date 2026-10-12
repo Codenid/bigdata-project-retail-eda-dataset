@@ -1,76 +1,31 @@
-# eda-dataset
+# Informe ejecutivo: dos análisis del comercio electrónico
 
-Proyecto reproducible para descargar y explorar el Brazilian E-Commerce Public Dataset by Olist. Analiza las nueve tablas sin alterar los CSV originales y produce un informe en español con cifras, calidad de datos y ocho gráficos.
+El análisis de Olist sitúa la entrega como un punto relevante de la experiencia del comprador. Online Retail muestra una actividad concentrada en Reino Unido y en una fracción de sus clientes identificados, con importes de factura muy desiguales. Son dos EDAs independientes: corresponden a empresas, periodos, monedas y unidades de observación diferentes. Sus cifras no se suman ni permiten comparar directamente desempeño comercial.
 
-## Dataset y acceso
+## 1. Olist: entregas y satisfacción del comprador
 
-Fuente y documentación: [Olist en Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce). Nueve CSV relacionados: clientes, geolocalización, artículos, pagos, reseñas, pedidos, productos, vendedores y traducción de categorías. La documentación publica 126,19 MB sin comprimir, con pedidos de 2016–2018. La descarga de la versión 2 se comprobó sin cuenta, API key ni autenticación. El ZIP real y los CSV se miden en el informe; reservar al menos 600 MB de espacio libre para entorno, datos, caché y archivos temporales.
+El dataset brasileño de Olist reúne **99.441 pedidos** de 2016–2018 distribuidos en nueve tablas. Entre los **96.470 pedidos entregados con fechas completas**, la mediana de entrega es **10,22 días** y el percentil 95 llega a **29,27 días**. **7.826 pedidos (8,11%)** llegaron después de la fecha y hora estimadas.
 
-Licencia de los datos: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Atribuir a Olist, respetar uso no comercial y compartir adaptaciones bajo la misma licencia. Los datos no se incluyen en el repositorio. Los resultados derivados mantienen estas condiciones; el proyecto no implica respaldo de Olist.
+La experiencia de entrega se asocia con diferencias en reseñas. Entre pedidos entregados con fechas y puntuación disponibles, la puntuación media es **4,29/5 cuando llegan a tiempo**, frente a **2,57/5 cuando llegan tarde**. La correlación de Spearman entre duración y puntuación es **-0,235**. Esta asociación justifica estudiar los pedidos demorados, pero no demuestra que el retraso explique por sí solo la valoración: vendedores, categorías, distancias y selección de quienes reseñan pueden influir.
 
-La URL entregada apunta a la versión vigente; `scripts/download.py` fija `datasetVersionNumber=2` y un SHA-256 conocido. Descarga mediante `curl -fL` con reintentos, valida hash, miembros y CRC, y extrae solo los nueve CSV. Reutiliza el ZIP verificado; `--force` vuelve a descargar. Si el endpoint cambia, exige login, devuelve HTML o cambia bytes, falla: no acepta silenciosamente un dataset diferente. No se necesitan credenciales para la ejecución comprobada.
+La calidad estructural permite analizar los pedidos sin multiplicarlos al cruzar tablas: artículos, pagos y reseñas se agregaron previamente por pedido. Hay **260 discrepancias mayores a BRL 0,05** entre pagos y precio más flete sobre **98.665 pedidos comparables**; requieren contexto contable y no prueban fraude. La repetición de registros geográficos y de claves de reseña exige tratar cada tabla según su granularidad.
 
-## Reproducción
+La lectura empresarial principal es la presencia de una cola de entregas prolongadas asociada a menor satisfacción. La puntualidad descrita excluye cancelaciones y pedidos sin fechas completas; el dataset histórico no representa todo el comercio brasileño actual. Las cifras monetarias son BRL nominales y no describen margen.
 
-Requisitos: Python 3.12, `venv`, `pip`, `curl`, acceso a Kaggle y al índice de paquetes. Comandos desde esta carpeta, Linux/macOS:
+[Informe completo de Olist](edas/olist/reports/informe_eda.md) · [Gráficos](edas/olist/reports/figures/) · [Tablas](edas/olist/reports/tables/)
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.lock.txt
-python scripts/download.py
-MPLCONFIGDIR=/tmp/eda-matplotlib python scripts/eda.py
-python scripts/validate.py
-python -m compileall -q scripts
-python -m pip check
-```
+## 2. Online Retail: concentración comercial y facturas heterogéneas
 
-`requirements.txt` fija las dos dependencias directas; `requirements.lock.txt` fija también todas las dependencias transitivas de la ejecución de referencia en Python 3.12/Linux. No garantiza compatibilidad con otras versiones de Python o reproducción binaria de PNG entre sistemas.
+El archivo de UCI contiene **541.909 líneas de factura** de un comercio británico, del 1 de diciembre de 2010 al 9 de diciembre de 2011. Las ventas positivas —cantidades y precios mayores que cero, fecha y factura disponibles y sin prefijo de cancelación C— reúnen **19.960 facturas** y suman **GBP 10.666.684,54**. Este importe incluye los cargos presentes en esas líneas y no equivale a beneficio ni cobros auditados.
 
-Si Python carece de `ensurepip` pero existe pip del sistema (como en el entorno de referencia), la alternativa ejecutada fue:
+**Reino Unido concentra el 84,61% del importe positivo.** Entre **4.338 clientes identificados con ventas positivas**, los **434 clientes de mayor importe**, aproximadamente el 10%, concentran **61,38%** de las ventas identificadas. **65,58%** de estos clientes tienen al menos dos facturas en la ventana observada; es recurrencia observada, no una tasa de retención.
 
-```bash
-python3 -m venv --without-pip .venv
-python3 -m pip --python .venv/bin/python install -r requirements.lock.txt
-.venv/bin/python scripts/download.py
-MPLCONFIGDIR=/tmp/eda-matplotlib .venv/bin/python scripts/eda.py
-.venv/bin/python scripts/validate.py
-.venv/bin/python -m compileall -q scripts
-python3 -m pip --python .venv/bin/python check
-```
+La factura positiva mediana suma **GBP 303,84**, mientras que el percentil 95 alcanza **GBP 1.585,92**. La asimetría es compatible con la presencia de compradores mayoristas descrita por la fuente, pero no identifica qué clientes son mayoristas. Noviembre de 2011 suma **GBP 1.509.496,33**; diciembre de 2011 termina el día 9, de modo que su descenso no permite concluir una caída de demanda mensual.
 
-Si tampoco existe pip del sistema, instalar los componentes `python3-venv` y `python3-pip` con el gestor del sistema antes de continuar. El análisis no requiere internet una vez descargados los datos y las dependencias. Los scripts funcionan también al invocarlos desde otro directorio.
+Las **3.836 facturas con prefijo C** registran **GBP -896.812,49** de importe firmado. El total firmado de todas las líneas, incluidos otros ajustes, es **GBP 9.747.747,93**. Las cancelaciones no se emparejaron con ventas originales, por lo que no se presenta una tasa de devolución. Faltan identificadores de cliente en **24,93% de las líneas** y se conservan **5.268 duplicados completos adicionales** al no poder confirmar que sean errores.
 
-## Estructura y resultados
+La lectura empresarial principal es una exposición relevante a pocos clientes identificados y al mercado británico. Conviene investigar la naturaleza de esa concentración y de los ajustes antes de interpretar estabilidad comercial. La ausencia de clientes en parte de las líneas limita la extrapolación; no hay costos ni evidencia causal.
 
-```text
-eda-dataset/
-├── AGENTS.md
-├── README.md
-├── requirements.txt
-├── requirements.lock.txt
-├── scripts/
-│   ├── download.py
-│   ├── eda.py
-│   └── validate.py
-├── data/                  # ZIP, manifest.json y raw/; excluidos de Git
-└── reports/
-    ├── informe_eda.md
-    ├── metricas.json
-    ├── figures/           # 8 PNG
-    └── tables/            # inventarios, estadísticas e integridad
-```
+[Informe completo de Online Retail](edas/online_retail/reports/informe_eda.md) · [Gráficos](edas/online_retail/reports/figures/) · [Tablas](edas/online_retail/reports/tables/)
 
-Leer [el informe](reports/informe_eda.md). Incluye dimensiones, columnas y tipos, faltantes, duplicados, claves candidatas, referencias, parseo de fechas, importes inválidos, extremos IQR, distribuciones y relaciones a nivel de pedido. Los artículos y pagos se suman y las reseñas se promedian por pedido antes de cruzar, con validación uno a uno. Las correlaciones usan casos completos por par y exportan sus denominadores. No se imputan faltantes ni se eliminan extremos.
-
-## Validación de referencia
-
-Ejecución completada el 11 de octubre de 2026 con Python 3.12.3/Linux:
-
-- Descarga pública inicial y `scripts/download.py --force`: ambas completadas; nueve CSV con SHA-256 y CRC correctos. ZIP: 44.717.580 bytes; CSV extraídos: 126.186.995 bytes.
-- `scripts/eda.py`: informe, nueve tablas CSV, métricas JSON y ocho PNG generados; 99.441 pedidos conservados tras los cruces.
-- `scripts/validate.py`: 14 enlaces locales válidos, ocho PNG decodificables, dimensiones/faltantes/duplicados de las nueve tablas contrastados con los CSV originales y métricas de pedidos recalculadas.
-- `compileall`: sin errores; `pip check`: sin dependencias incompatibles.
-- Inspección visual de los gráficos de faltantes y correlaciones: etiquetas y contenido legibles.
-
-Hallazgos de referencia: 96.470 pedidos entregados con fechas completas, 8,11% posteriores a la estimación, mediana de entrega de 10,22 días. La relación entre entrega y reseñas es una asociación descriptiva, no una conclusión causal.
+Los dos análisis conservan faltantes y extremos, explicitan sus poblaciones y distinguen hallazgos de hipótesis. Fuente Olist: [Kaggle, versión 2](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Fuente Online Retail: [Daqing Chen, UCI (2015)](https://doi.org/10.24432/C5BW33), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). [Metodología y organización técnica](docs/metodologia.md).
