@@ -1,0 +1,10 @@
+Tabla,Filas,Columnas,Duplicados completos,Celdas faltantes
+customers,99441,5,0,0
+geolocation,1000163,5,261831,0
+order_items,112650,7,0,0
+order_payments,103886,5,0,0
+order_reviews,99224,7,0,145903
+orders,99441,8,0,4908
+products,32951,9,0,2448
+sellers,3095,4,0,0
+product_category_name_translation,71,2,0,0

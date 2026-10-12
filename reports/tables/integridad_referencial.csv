@@ -1,0 +1,8 @@
+Tabla,Columna,Referencia,Filas sin referencia,Claves nulas
+orders,customer_id,customers,0,0
+order_items,order_id,orders,0,0
+order_items,product_id,products,0,0
+order_items,seller_id,sellers,0,0
+order_payments,order_id,orders,0,0
+order_reviews,order_id,orders,0,0
+products,product_category_name,product_category_name_translation,13,610

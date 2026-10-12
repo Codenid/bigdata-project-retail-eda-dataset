@@ -1,0 +1,13 @@
+{
+  "total_orders": 99441,
+  "delivered_complete": 96470,
+  "reviewed_delivered": 95824,
+  "late_orders": 7826,
+  "late_percent": 8.112366538820359,
+  "delivery_median": 10.217476851851853,
+  "delivery_p95": 29.274046296296298,
+  "spearman_delivery_review": -0.23484879442055714,
+  "negative_delivery_days": 0,
+  "payment_discrepancies": 260,
+  "payment_comparable": 98665
+}
