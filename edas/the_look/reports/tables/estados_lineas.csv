@@ -1,0 +1,6 @@
+tabla,dimension,valor,filas,claves_distintas_no_nulas,importe_observado_finito,importes_no_utilizables,porcentaje_filas
+order_items,status,Shipped,54372,37650,3238775.732991852,0,29.96395860199054
+order_items,status,Complete,45370,31327,2685055.3626662493,0,25.003031004419757
+order_items,status,Processing,36542,25166,2185319.6718629785,0,20.13799336485578
+order_items,status,Cancelled,27320,18810,1626157.5114165733,0,15.05582559049477
+order_items,status,Returned,17854,12350,1059838.8710029498,0,9.839191438239151

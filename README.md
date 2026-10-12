@@ -1,31 +1,29 @@
-# Informe ejecutivo: dos análisis del comercio electrónico
+# Comercio electrónico: informe ejecutivo
 
-El análisis de Olist sitúa la entrega como un punto relevante de la experiencia del comprador. Online Retail muestra una actividad concentrada en Reino Unido y en una fracción de sus clientes identificados, con importes de factura muy desiguales. Son dos EDAs independientes: corresponden a empresas, periodos, monedas y unidades de observación diferentes. Sus cifras no se suman ni permiten comparar directamente desempeño comercial.
+Tres EDAs independientes describen entrega y satisfacción, concentración comercial y calidad de datos operativos. Sus empresas, periodos y poblaciones difieren; los importes no se suman ni permiten comparar desempeño directamente.
 
-## 1. Olist: entregas y satisfacción del comprador
+## 1. Olist: entrega y satisfacción
 
-El dataset brasileño de Olist reúne **99.441 pedidos** de 2016–2018 distribuidos en nueve tablas. Entre los **96.470 pedidos entregados con fechas completas**, la mediana de entrega es **10,22 días** y el percentil 95 llega a **29,27 días**. **7.826 pedidos (8,11%)** llegaron después de la fecha y hora estimadas.
+Sobre **99.441 pedidos**, la entrega mediana es **10,22 días**. De 96.470 entregados con fechas completas, **8,11%** llegó después de la estimación registrada.
 
-La experiencia de entrega se asocia con diferencias en reseñas. Entre pedidos entregados con fechas y puntuación disponibles, la puntuación media es **4,29/5 cuando llegan a tiempo**, frente a **2,57/5 cuando llegan tarde**. La correlación de Spearman entre duración y puntuación es **-0,235**. Esta asociación justifica estudiar los pedidos demorados, pero no demuestra que el retraso explique por sí solo la valoración: vendedores, categorías, distancias y selección de quienes reseñan pueden influir.
+La reseña media es **4,29/5 a tiempo** y **2,57/5 tarde**, entre pedidos con reseña. La demora se asocia con menor puntuación, sin demostrar causalidad. Los meses parciales, faltantes y selección de entregados limitan la comparación. Los importes son BRL nominales.
 
-La calidad estructural permite analizar los pedidos sin multiplicarlos al cruzar tablas: artículos, pagos y reseñas se agregaron previamente por pedido. Hay **260 discrepancias mayores a BRL 0,05** entre pagos y precio más flete sobre **98.665 pedidos comparables**; requieren contexto contable y no prueban fraude. La repetición de registros geográficos y de claves de reseña exige tratar cada tabla según su granularidad.
+[Informe Olist](edas/olist/reports/informe_eda.md). Fuente: Olist, Kaggle versión 2; CC BY-NC-SA 4.0.
 
-La lectura empresarial principal es la presencia de una cola de entregas prolongadas asociada a menor satisfacción. La puntualidad descrita excluye cancelaciones y pedidos sin fechas completas; el dataset histórico no representa todo el comercio brasileño actual. Las cifras monetarias son BRL nominales y no describen margen.
+## 2. Online Retail: concentración comercial
 
-[Informe completo de Olist](edas/olist/reports/informe_eda.md) · [Gráficos](edas/olist/reports/figures/) · [Tablas](edas/olist/reports/tables/)
+Las **19.960 facturas de ventas positivas** suman **GBP 10.666.684,54**. Reino Unido reúne **84,61%** de ese importe. El 10% superior de los 4.338 clientes identificados concentra **61,38%** de las ventas identificadas.
 
-## 2. Online Retail: concentración comercial y facturas heterogéneas
+Falta cliente en **24,93%** de las líneas. Las cancelaciones y ajustes se distinguen de ventas positivas; no se emparejaron devoluciones con compras. La concentración es un hallazgo; no confirma margen ni estabilidad futura.
 
-El archivo de UCI contiene **541.909 líneas de factura** de un comercio británico, del 1 de diciembre de 2010 al 9 de diciembre de 2011. Las ventas positivas —cantidades y precios mayores que cero, fecha y factura disponibles y sin prefijo de cancelación C— reúnen **19.960 facturas** y suman **GBP 10.666.684,54**. Este importe incluye los cargos presentes en esas líneas y no equivale a beneficio ni cobros auditados.
+[Informe Online Retail](edas/online_retail/reports/informe_eda.md). Fuente: Daqing Chen, UCI (2015); CC BY 4.0.
 
-**Reino Unido concentra el 84,61% del importe positivo.** Entre **4.338 clientes identificados con ventas positivas**, los **434 clientes de mayor importe**, aproximadamente el 10%, concentran **61,38%** de las ventas identificadas. **65,58%** de estos clientes tienen al menos dos facturas en la ventana observada; es recurrencia observada, no una tasa de retención.
+## 3. The Look: estructura íntegra y fechas por aclarar
 
-La factura positiva mediana suma **GBP 303,84**, mientras que el percentil 95 alcanza **GBP 1.585,92**. La asimetría es compatible con la presencia de compradores mayoristas descrita por la fuente, pero no identifica qué clientes son mayoristas. Noviembre de 2011 suma **GBP 1.509.496,33**; diciembre de 2011 termina el día 9, de modo que su descenso no permite concluir una caída de demanda mensual.
+Las exportaciones de BigQuery reúnen **125.303 pedidos**, **181.458 líneas** y **2.426.096 eventos**. Las claves son únicas y los nueve enlaces comprobados cubren todas las referencias no nulas. Las líneas suman **10.795.147,15**, pero solo **2.685.055,36** corresponde al estado Complete; la moneda y el reconocimiento de ingresos no están documentados.
 
-Las **3.836 facturas con prefijo C** registran **GBP -896.812,49** de importe firmado. El total firmado de todas las líneas, incluidos otros ajustes, es **GBP 9.747.747,93**. Las cancelaciones no se emparejaron con ventas originales, por lo que no se presenta una tasa de devolución. Faltan identificadores de cliente en **24,93% de las líneas** y se conservan **5.268 duplicados completos adicionales** al no poder confirmar que sean errores.
+**29,96%** de las líneas con creación y envío tiene el envío anterior a su creación. Además, todas las líneas enlazan unidades sin sold_at, aunque el inventario cuenta 181.458 unidades con esa fecha. Se requiere aclarar estas diferencias antes de interpretar stock o tiempos. El **46,41%** de eventos no tiene usuario; no se atribuye conversión a pedidos.
 
-La lectura empresarial principal es una exposición relevante a pocos clientes identificados y al mercado británico. Conviene investigar la naturaleza de esa concentración y de los ajustes antes de interpretar estabilidad comercial. La ausencia de clientes en parte de las líneas limita la extrapolación; no hay costos ni evidencia causal.
+[Informe The Look](edas/the_look/reports/informe_eda.md). Fuente: CSV agregados aportados tras ejecutar BigQuery; origen exacto y licencia pendientes de confirmar.
 
-[Informe completo de Online Retail](edas/online_retail/reports/informe_eda.md) · [Gráficos](edas/online_retail/reports/figures/) · [Tablas](edas/online_retail/reports/tables/)
-
-Los dos análisis conservan faltantes y extremos, explicitan sus poblaciones y distinguen hallazgos de hipótesis. Fuente Olist: [Kaggle, versión 2](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Fuente Online Retail: [Daqing Chen, UCI (2015)](https://doi.org/10.24432/C5BW33), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). [Metodología y organización técnica](docs/metodologia.md).
+Los tres análisis conservan extremos y faltantes, explicitan denominadores y distinguen hallazgos de hipótesis. [Organización y metodología](docs/metodologia.md).

@@ -1,0 +1,10 @@
+relacion,filas_hijas,fk_nulas,sin_correspondencia,cobertura_no_nulas_pct,padres_duplicados,max_lineas_por_clave,filas_left_join
+events.user_id -> users.id,2426096,1125910,0,100.0,0,161,2426096
+inventory_items.product_distribution_center_id -> distribution_centers.id,489869,0,0,100.0,0,65259,489869
+inventory_items.product_id -> products.id,489869,0,0,100.0,0,64,489869
+order_items.inventory_item_id -> inventory_items.id,181458,0,0,100.0,0,1,181458
+order_items.order_id -> orders.order_id,181458,0,0,100.0,0,4,181458
+order_items.product_id -> products.id,181458,0,0,100.0,0,23,181458
+order_items.user_id -> users.id,181458,0,0,100.0,0,13,181458
+orders.user_id -> users.id,125303,0,0,100.0,0,4,125303
+products.distribution_center_id -> distribution_centers.id,29120,0,0,100.0,0,3929,29120

@@ -1,0 +1,8 @@
+tabla,filas,clave_nulos,clave_repeticiones
+distribution_centers,10,0,0
+events,2426096,0,0
+inventory_items,489869,0,0
+order_items,181458,0,0
+orders,125303,0,0
+products,29120,0,0
+users,100000,0,0

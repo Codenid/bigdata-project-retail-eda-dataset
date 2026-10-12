@@ -1,0 +1,15 @@
+tabla,dimension,valor,filas,claves_distintas_no_nulas,importe_observado_finito,importes_no_utilizables,porcentaje_filas
+orders,pais_perfil,China,42319,42319,,,33.77333343974207
+orders,pais_perfil,United States,28287,28287,,,22.57487849452926
+orders,pais_perfil,Brasil,18223,18223,,,14.543147410676522
+orders,pais_perfil,South Korea,6696,6696,,,5.343846516045106
+orders,pais_perfil,France,6025,6025,,,4.80834457275564
+orders,pais_perfil,United Kingdom,5692,5692,,,4.542588764834042
+orders,pais_perfil,Spain,5164,5164,,,4.121210186507905
+orders,pais_perfil,Germany,5036,5036,,,4.019057803883387
+orders,pais_perfil,Japan,3114,3114,,,2.485175933537106
+orders,pais_perfil,Australia,2815,2815,,,2.2465543522501457
+orders,pais_perfil,Belgium,1575,1575,,,1.256953145575126
+orders,pais_perfil,Poland,331,331,,,0.26415967694308995
+orders,pais_perfil,Colombia,19,19,,,0.015163244295826914
+orders,pais_perfil,Austria,7,7,,,0.005586458424778337

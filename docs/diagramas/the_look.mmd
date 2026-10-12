@@ -1,0 +1,64 @@
+erDiagram
+    USERS ||--o{ ORDERS : "user_id"
+    USERS ||--o{ ORDER_ITEMS : "user_id"
+    USERS |o--o{ EVENTS : "user_id opcional"
+    ORDERS ||--|{ ORDER_ITEMS : "order_id, 1 a 4 lineas"
+    PRODUCTS ||--o{ ORDER_ITEMS : "product_id"
+    PRODUCTS ||--o{ INVENTORY_ITEMS : "product_id"
+    INVENTORY_ITEMS ||--o| ORDER_ITEMS : "inventory_item_id"
+    DISTRIBUTION_CENTERS ||--o{ PRODUCTS : "distribution_center_id"
+    DISTRIBUTION_CENTERS ||--o{ INVENTORY_ITEMS : "product_distribution_center_id"
+
+    USERS {
+        int id PK
+        string country
+        string state
+    }
+    ORDERS {
+        int order_id PK
+        int user_id FK
+        string status
+        int num_of_item
+        timestamp created_at
+    }
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int user_id FK
+        int product_id FK
+        int inventory_item_id FK "no repetido en las lineas exportadas"
+        string status
+        float sale_price
+        timestamp created_at
+        timestamp shipped_at
+        timestamp delivered_at
+        timestamp returned_at
+    }
+    PRODUCTS {
+        int id PK
+        int distribution_center_id FK
+        string category
+        string department
+        float retail_price
+        float cost
+    }
+    INVENTORY_ITEMS {
+        int id PK
+        int product_id FK
+        int product_distribution_center_id FK
+        timestamp created_at
+        timestamp sold_at "no demuestra stock disponible"
+        float cost
+    }
+    EVENTS {
+        int id PK
+        int user_id FK "puede ser nulo"
+        string session_id "agrupa eventos"
+        int sequence_number
+        string event_type
+        timestamp created_at
+    }
+    DISTRIBUTION_CENTERS {
+        int id PK
+        string name
+    }

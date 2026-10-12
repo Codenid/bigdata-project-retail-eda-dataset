@@ -60,49 +60,42 @@ def main():
     plt.figure(figsize=(9,5)); cumulative=customer.importe.cumsum()/customer.importe.sum()*100
     plt.plot(range(1,len(customer)+1),cumulative); plt.xlabel('Clientes ordenados por importe'); save('concentracion.png','Concentración entre clientes identificados','Porcentaje acumulado de importe')
     fmt=lambda x: f'{x:,.2f}'
-    report=f'''# Informe EDA: Online Retail (UCI)
+    report=f'''# Online Retail: informe EDA
 
-## Alcance y calidad
+## Alcance
 
-Se analizaron {m['filas']:,} líneas y ocho columnas del comercio británico documentado por [UCI](https://archive.ics.uci.edu/dataset/352/online+retail), entre {m['fecha_min']} y {m['fecha_max']}. Fuente: Daqing Chen (2015), DOI [10.24432/C5BW33](https://doi.org/10.24432/C5BW33), licencia [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). El importe es Quantity × UnitPrice, en GBP nominales; no representa beneficio ni cobro confirmado.
+**{m['filas']:,} líneas de factura**, del {m['fecha_min'][:10]} al {m['fecha_max'][:10]}, de un comercio británico. Fuente: [Daqing Chen, UCI (2015)](https://doi.org/10.24432/C5BW33), licencia [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Importes nominales en GBP, calculados como Quantity × UnitPrice.
 
-Hay {m['facturas']:,} códigos de factura y {m['clientes']:,} identificadores de cliente distintos no nulos. Faltan CustomerID en {m['clientes_faltantes']:,} líneas ({m['clientes_faltantes']/m['filas']*100:.2f}%) y Description en {m['descripciones_faltantes']:,}. Aunque la ficha de UCI declara ausencia de faltantes, el archivo observado sí los contiene. Se encontraron {m['duplicados']:,} duplicados completos adicionales: se mantienen porque no hay identificador de línea que permita determinar si son errores. Fechas inválidas o ausentes tras conversión: {m['fechas_invalidas']}.
+## Hallazgos principales
 
-![Faltantes](figures/faltantes.png)
+| Indicador | Resultado |
+| --- | ---: |
+| Facturas con ventas positivas | {m['facturas_ventas']:,} |
+| Importe de ventas positivas | GBP {fmt(m['importe_ventas'])} |
+| Factura positiva mediana / P95 | GBP {fmt(m['ticket_mediano'])} / {fmt(m['ticket_p95'])} |
+| Participación de Reino Unido en importe positivo | {m['uk_porcentaje']:.2f}% |
+| Importe de cancelaciones con prefijo C | GBP {fmt(m['importe_cancelaciones'])} |
+| Total firmado, incluidos otros ajustes | GBP {fmt(m['importe_total_firmado'])} |
 
-## Ventas, cancelaciones y ajustes
+Las ventas positivas incluyen {m['lineas_ventas']:,} líneas con cantidad y precio > 0, fecha y factura presentes y sin prefijo C. El importe puede incluir portes y otros cargos; no representa beneficio ni cobro auditado.
 
-La población de ventas positivas exige factura y fecha disponibles, factura sin prefijo C, cantidad > 0 y precio > 0. Contiene {m['lineas_ventas']:,} líneas y {m['facturas_ventas']:,} facturas; conserva duplicados y extremos. Las {m['filas']-m['lineas_ventas']:,} líneas restantes se mantienen en el perfil y en el balance firmado. Los códigos especiales de producto no se excluyen: el importe puede incluir portes y otros cargos.
+Entre **{m['clientes_ventas']:,} clientes identificados** con ventas positivas, **{m['clientes_recurrentes']/m['clientes_ventas']*100:.2f}%** tiene al menos dos facturas. Los **{n_top:,} clientes de mayor importe** (10%, redondeado hacia arriba) reúnen **{m['top10_clientes_porcentaje']:.2f}%** de GBP {fmt(m['importe_ventas_identificadas'])} de ventas identificadas. Es recurrencia dentro de la ventana, no retención por cohorte.
 
-Las ventas positivas suman GBP {fmt(m['importe_ventas'])}. Las facturas con prefijo C, que UCI identifica como cancelaciones, contienen {m['cancelaciones_lineas']:,} líneas, {m['cancelaciones_facturas']:,} facturas y un importe firmado de GBP {fmt(m['importe_cancelaciones'])}. Este importe no es una tasa de devolución de ventas: no se enlazaron cancelaciones con compras originales y sus ventanas pueden diferir. El total firmado de todas las líneas es GBP {fmt(m['importe_total_firmado'])}; incluye ajustes y no equivale a ingresos netos auditados.
+![Concentración de clientes identificados](figures/concentracion.png)
 
-Se observan {m['cantidades_negativas']:,} cantidades negativas, {m['precios_cero']:,} precios cero y {m['precios_negativos']:,} precios negativos. No se consideran errores automáticamente. [Segmentos y balance](tables/segmentos.csv), [calidad](tables/calidad.csv) y [estadísticas y extremos IQR](tables/estadisticas_numericas.csv) documentan las poblaciones.
+Noviembre de 2011 registra GBP {fmt(m['noviembre_2011'])} de ventas positivas. Diciembre termina el día 9; no debe compararse como mes completo.
 
-## Distribución y concentración
+## Calidad y límites
 
-La mediana del importe positivo por factura es GBP {fmt(m['ticket_mediano'])}; P95 es GBP {fmt(m['ticket_p95'])}. La diferencia muestra una distribución asimétrica. No se recorta la cola ni se borra ninguna observación por IQR.
+Falta CustomerID en **{m['clientes_faltantes']/m['filas']*100:.2f}%** de las líneas y descripción en {m['descripciones_faltantes']:,}. Se conservan **{m['duplicados']:,} duplicados completos adicionales** y los extremos: no hay una clave de línea que confirme que sean errores. Hay {m['cantidades_negativas']:,} cantidades negativas, {m['precios_cero']:,} precios cero y {m['precios_negativos']:,} precios negativos.
 
-![Facturas](figures/facturas.png)
+Las líneas se agregaron por factura; clientes nulos se excluyeron solo del análisis de clientes. No se emparejaron cancelaciones con ventas originales, por lo que no se estima una tasa de devolución. La concentración y la cola larga de facturas son hallazgos; la presencia de mayoristas podría contribuir, pero no se identificó a esos clientes. No hay costos ni margen.
 
-Reino Unido concentra {m['uk_porcentaje']:.2f}% del importe de ventas positivas, con denominador GBP {fmt(m['importe_ventas'])}. Country es el país registrado del cliente; no demuestra el destino de entrega. [Detalle por país](tables/paises.csv).
+## Evidencia
 
-![Países](figures/paises.png)
+[Métricas](metricas.json), [calidad](tables/calidad.csv), [segmentos](tables/segmentos.csv), [países](tables/paises.csv), [serie mensual](tables/ventas_mensuales.csv) y [estadísticas](tables/estadisticas_numericas.csv). [Países](figures/paises.png), [facturas](figures/facturas.png) y [ventas mensuales](figures/ventas_mensuales.png).
 
-Noviembre de 2011 suma GBP {fmt(m['noviembre_2011'])} en ventas positivas. Diciembre de 2011 termina el día 9 y es parcial: no debe compararse como un mes completo. El patrón mensual es compatible con estacionalidad, pero un solo ciclo no demuestra una pauta estable ni su causa. [Serie mensual](tables/ventas_mensuales.csv).
-
-![Ventas mensuales](figures/ventas_mensuales.png)
-
-Entre {m['clientes_ventas']:,} clientes identificados con ventas positivas, {m['clientes_recurrentes']:,} ({m['clientes_recurrentes']/m['clientes_ventas']*100:.2f}%) tienen al menos dos facturas distintas dentro de la ventana observada. No es retención por cohorte. El 10% superior, redondeado hacia arriba a {n_top:,} clientes, concentra {m['top10_clientes_porcentaje']:.2f}% del importe identificado (GBP {fmt(m['importe_ventas_identificadas'])}). Los clientes ausentes se excluyen solo de esta población; no se imputan ni se agrupan como una persona. [Frecuencia agregada](tables/frecuencia_clientes.csv).
-
-![Concentración](figures/concentracion.png)
-
-## Granularidad, relaciones y límites
-
-Se agregan líneas por InvoiceNo antes de calcular tickets; no se unen tablas. {m['facturas_inconsistentes']:,} facturas tienen más de un valor de cliente, país o fecha contando el faltante como categoría. La tabla [consistencia](tables/consistencia_facturas.csv) recoge solo conteos por factura, sin sus identificadores en los artefactos publicados. Spearman entre número de líneas e importe positivo por factura: {m['spearman_lineas_importe']:.3f}; ambos comparten una construcción contable y no se infiere causalidad.
-
-Hallazgos: concentración geográfica y de clientes, cola larga de tickets y presencia material de cancelaciones y ajustes. Hipótesis: la actividad mayorista descrita por UCI podría contribuir a los extremos; no se ha validado el tipo de cada cliente. El archivo corresponde a una empresa histórica y no representa el mercado británico actual. No hay costos, margen, pagos ni emparejamiento de devoluciones. Los faltantes limitan la lectura de recurrencia y concentración.
-
-SHA-256 del ZIP: `f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b`. [Métricas calculadas](metricas.json). Datos originales intactos y excluidos de Git; no se publican listas de clientes ni transacciones individuales.
+SHA-256 de la fuente: `f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c84aede8b`. Datos originales intactos y excluidos de Git.
 '''
     # El diagnóstico conserva granularidad por factura, pero publica únicamente sus frecuencias.
     consistency.value_counts().rename('facturas').to_csv(tables/'consistencia_facturas.csv')

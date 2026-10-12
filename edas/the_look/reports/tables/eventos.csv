@@ -1,0 +1,7 @@
+tabla,dimension,valor,filas,claves_distintas_no_nulas,importe_observado_finito,importes_no_utilizables,porcentaje_filas
+events,event_type,product,843630,681458,,,34.773149949548575
+events,event_type,cart,594135,431963,,,24.489344197426647
+events,event_type,department,593912,431740,,,24.480152475417295
+events,event_type,purchase,181458,181458,,,7.479423732614043
+events,event_type,cancel,125123,125123,,,5.157380416933212
+events,event_type,home,87838,87838,,,3.620549228060225

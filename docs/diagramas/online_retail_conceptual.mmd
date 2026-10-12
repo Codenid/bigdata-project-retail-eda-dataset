@@ -1,0 +1,27 @@
+erDiagram
+    CLIENTE |o--o{ FACTURA : "asociacion opcional por CustomerID"
+    FACTURA ||--|{ LINEA_FACTURA : "agrupa InvoiceNo"
+    PRODUCTO_O_CARGO ||--|{ LINEA_FACTURA : "agrupa StockCode"
+
+    CLIENTE {
+        string CustomerID PK "clave propuesta; excluir nulos"
+    }
+    FACTURA {
+        string InvoiceNo PK "clave propuesta de agrupacion"
+        string CustomerID FK "opcional"
+        string Country "valor observado por factura"
+        boolean es_cancelacion "derivado del prefijo C"
+    }
+    LINEA_FACTURA {
+        int fila_origen PK "clave tecnica propuesta, no existe en Excel"
+        string InvoiceNo FK
+        string StockCode FK
+        string Description "se conserva en la linea"
+        int Quantity
+        datetime InvoiceDate "se conserva por variacion intrafactura"
+        decimal UnitPrice "se conserva en la linea"
+        decimal importe "derivado Quantity por UnitPrice"
+    }
+    PRODUCTO_O_CARGO {
+        string StockCode PK "clave propuesta de agrupacion"
+    }

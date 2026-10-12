@@ -1,0 +1,9 @@
+{
+  "origen": "CSV agregados aportados por el usuario tras ejecutar BigQuery; proyecto/dataset y trabajos no confirmados",
+  "sha256": {
+    "metadata_columnas.csv": "9718220e30b1a6e8be537540e71570e962756b970365a917bf8b6bd6da4b85bc",
+    "thelook_distribuciones.csv": "e6aa45c2ef4c632c7702abe31ac463b8e9c2e4adf5b59ddbc5988d5f2d876e4f",
+    "thelook_perfil_tablas.csv": "76b1ce3e6eb8db9117331413dd0ce664277cbf009221ac182e39b6ad03f4d956",
+    "thelook_relaciones.csv": "4c8a476e3a6165320f5174bcf4ad3397513cc62bd93064da5359ce96184a64d3"
+  }
+}

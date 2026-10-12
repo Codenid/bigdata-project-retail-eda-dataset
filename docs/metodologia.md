@@ -1,6 +1,6 @@
 # Organización y metodología
 
-Los dos análisis son independientes. `edas/olist/` contiene sus nueve tablas originales locales, scripts, informe, tablas y gráficos; `edas/online_retail/` contiene el Excel original local y sus propios artefactos. No se mezclan registros, monedas ni poblaciones. El README raíz presenta resultados ejecutivos; cada informe detalla definiciones, denominadores y limitaciones.
+Los tres análisis son independientes. `edas/olist/` contiene sus nueve tablas originales locales, scripts, informe, tablas y gráficos; `edas/online_retail/` contiene el Excel original local y sus propios artefactos. No se mezclan registros, monedas ni poblaciones. El README raíz presenta resultados ejecutivos; cada informe detalla definiciones, denominadores y limitaciones.
 
 ## Ejecución desde la raíz
 
@@ -26,3 +26,7 @@ Si el entorno virtual no incluye pip, usar `/usr/bin/python3 -m pip --python .ve
 Olist conserva su versión 2 y licencia CC BY-NC-SA 4.0. Online Retail, de Daqing Chen (2015), UCI 352, DOI 10.24432/C5BW33, usa CC BY 4.0. Las licencias de datos y resultados son independientes; no atribuir la licencia de UCI a Olist.
 
 Online Retail conserva todas las filas, incluidos 5.268 duplicados adicionales. Sus ventas positivas requieren cantidad y precio positivos, fecha y factura disponibles y ausencia de prefijo C. Cancelaciones y ajustes se contabilizan por separado. Para clientes se usan solo IDs conocidos; la recurrencia cuenta facturas distintas en la ventana, sin interpretar retención. Los precios están en GBP nominales, sin redondear líneas antes de agregarlas. Se publican estadísticas agregadas, sin listas de IDs de clientes ni transacciones.
+
+## The Look
+
+Analiza los tres CSV agregados de BigQuery en `edas/the_look/data/raw/`, sin consultar el servicio. Ejecutar `MPLCONFIGDIR=/tmp/eda-matplotlib python edas/the_look/scripts/eda.py` y `python edas/the_look/scripts/validate.py`; luego regenerar el README con `python scripts/informe_ejecutivo.py`. La validación comprueba las exportaciones, no los registros individuales del origen.

@@ -1,0 +1,27 @@
+tabla,dimension,valor,filas,claves_distintas_no_nulas,importe_observado_finito,importes_no_utilizables,porcentaje_filas
+order_items,categoria_perfil,Intimates,13713,12827,456189.2705924511,0,7.557120656019575
+order_items,categoria_perfil,Jeans,12667,12253,1251610.931678772,0,6.980678724553341
+order_items,categoria_perfil,Tops & Tees,12097,11738,503409.6317658424,0,6.666556448324131
+order_items,categoria_perfil,Fashion Hoodies & Sweatshirts,12017,11665,654902.5803451538,0,6.6224691113095036
+order_items,categoria_perfil,Swim,11240,10907,644413.7107534409,0,6.194270850554949
+order_items,categoria_perfil,Sweaters,11226,10931,839936.7699203491,0,6.18655556657739
+order_items,categoria_perfil,Shorts,11109,10822,516939.26163434976,0,6.122077836193499
+order_items,categoria_perfil,Sleep & Lounge,11016,10716,545317.9012742043,0,6.070826306913997
+order_items,categoria_perfil,Accessories,9859,9616,425795.4195713922,0,5.4332131953399685
+order_items,categoria_perfil,Active,8996,8801,446649.5101628304,0,4.95762104729469
+order_items,categoria_perfil,Outerwear & Coats,8973,8754,1327471.858613968,0,4.944945937902986
+order_items,categoria_perfil,Underwear,7474,7216,202594.30027627945,0,4.118859460591431
+order_items,categoria_perfil,Pants,7227,6972,429183.52161598206,0,3.9827398075587737
+order_items,categoria_perfil,Socks,6206,6030,127826.68004059792,0,3.42007516890961
+order_items,categoria_perfil,Dresses,5402,5251,454537.93118476873,0,2.976997431912619
+order_items,categoria_perfil,Maternity,5124,5013,266550.3493938446,0,2.8237939357867936
+order_items,categoria_perfil,Suits & Sport Coats,4863,4740,601417.3093776703,0,2.679958998776576
+order_items,categoria_perfil,Plus,4268,4176,161698.45019590855,0,2.352059429730296
+order_items,categoria_perfil,Socks & Hosiery,3716,3653,63601.189881801605,0,2.0478568043293763
+order_items,categoria_perfil,Pants & Capris,3540,3480,192487.6907672882,0,1.9508646628971993
+order_items,categoria_perfil,Leggings,3213,3151,86650.82993888855,0,1.770657672849916
+order_items,categoria_perfil,Blazers & Jackets,3198,3161,294740.5405712128,0,1.7623912971596731
+order_items,categoria_perfil,Skirts,2095,2077,114541.30022239684,0,1.1545371380705176
+order_items,categoria_perfil,Suits,1103,1093,127357.9900226593,0,0.6078541590891556
+order_items,categoria_perfil,Jumpsuits & Rompers,905,898,41231.43012046814,0,0.4987379999779563
+order_items,categoria_perfil,Clothing Sets,211,211,18090.790018081665,0,0.11628035137607601

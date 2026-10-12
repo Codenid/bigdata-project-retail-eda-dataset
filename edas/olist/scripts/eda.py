@@ -174,76 +174,39 @@ def main():
                    negative_delivery_days=int((joined.delivery_days < 0).sum()),
                    payment_discrepancies=int(discrepancies), payment_comparable=len(comparable))
     (OUT / 'metricas.json').write_text(json.dumps(metrics, indent=2) + '\n')
-    text = f'''# Informe EDA: Brazilian E-Commerce Public Dataset by Olist
+    text = f'''# Olist: informe EDA
 
-## Fuente, acceso y reproducción
+## Alcance
 
-Fuente: [Olist en Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), versión 2, nueve CSV. La documentación describe pedidos de 2016–2018 de distintos marketplaces. Descarga pública comprobada sin cuenta ni token. Licencia del dataset: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/): atribución, uso no comercial y compartir adaptaciones bajo la misma licencia. Olist es la fuente; este análisis no está afiliado a Olist.
+**{len(orders):,} pedidos** de 2016–2018, distribuidos en nueve tablas. Fuente: [Olist en Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), versión 2, licencia [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). Los importes están en BRL nominales.
 
-ZIP observado: {manifest['compressed_bytes']:,} bytes ({manifest['compressed_bytes']/1e6:.2f} MB); CSV: {manifest['uncompressed_bytes']:,} bytes ({manifest['uncompressed_bytes']/1e6:.2f} MB). SHA-256: `{manifest['sha256']}`. URL exacta y lista de archivos en `data/manifest.json` (generado localmente). Python {platform.python_version()}, pandas {pd.__version__}, matplotlib {matplotlib.__version__}. Los scripts calculan todas las cifras; no hay muestreo aleatorio.
+## Hallazgos principales
 
-## Dimensiones, tipos y calidad
+| Indicador | Resultado | Población |
+| --- | ---: | --- |
+| Mediana de entrega | {metrics['delivery_median']:.2f} días | {len(delivered):,} entregados con fechas completas |
+| Percentil 95 de entrega | {metrics['delivery_p95']:.2f} días | Misma población |
+| Entregados tarde | {metrics['late_orders']:,} ({metrics['late_percent']:.2f}%) | Misma población; después de la hora estimada |
+| Reseña media a tiempo | {comparison.loc['A tiempo', 'puntuacion_media']:.2f}/5 | {comparison.loc['A tiempo', 'pedidos']:,} pedidos con reseña |
+| Reseña media tarde | {comparison.loc['Tarde', 'puntuacion_media']:.2f}/5 | {comparison.loc['Tarde', 'pedidos']:,} pedidos con reseña |
 
-{markdown(overview)}
+Las entregas más largas se asocian con puntuaciones menores: Spearman **{metrics['spearman_delivery_review']:.3f}**, sobre {len(reviewed):,} pedidos entregados con fechas y reseña. La asociación no demuestra causalidad; vendedor, categoría y selección de quienes reseñan pueden influir.
 
-Total: {sum(len(df) for df in frames.values()):,} filas distribuidas en tablas de distinta granularidad, no observaciones independientes sumables para inferencia. Inventario completo de columnas, tipos, faltantes y cardinalidad: [columnas_calidad.csv](tables/columnas_calidad.csv). Los identificadores y prefijos postales se leen como texto para preservar ceros iniciales. Las fechas originales se perfilan como texto y luego se convierten explícitamente para el análisis temporal; fallos de conversión: {date_table['Fechas no interpretables'].sum():,}.
+![Reseñas según puntualidad](figures/resenas_demora.png)
 
-![Faltantes](figures/faltantes.png)
+El precio por artículo tiene mediana **BRL {items.price.median():.2f}** y P99 **BRL {items.price.quantile(.99):.2f}**. Los extremos se conservan. Hay **{int(discrepancies):,} discrepancias superiores a BRL 0,05** entre pagos y precio más flete, sobre {len(comparable):,} pedidos comparables; no prueban fraude.
 
-Los campos opcionales de título y comentario de reseña concentran faltantes; su ausencia no implica automáticamente un error. Las fechas de entrega dependen del estado del pedido. No se imputan faltantes ni se eliminan duplicados en los CSV originales.
+## Calidad y límites
 
-{markdown(key_table)}
+Las claves de pedidos, clientes, productos y vendedores son únicas y las referencias principales están completas. Las reseñas repiten identificadores; la geolocalización repite prefijos. Hay 610 productos sin categoría y 13 sin traducción correspondiente. Los faltantes se mantienen, sin imputación.
 
-Una clave repetida no equivale a una fila completamente duplicada. Las reseñas pueden repetirse por identificador o por pedido: {reviews.order_id.duplicated().sum():,} filas adicionales comparten pedido. Se agregan las puntuaciones mediante su media por pedido. Geolocalización tiene {geo.geolocation_zip_code_prefix.nunique():,} prefijos para {len(geo):,} registros; no debe cruzarse por prefijo sin agregación previa. Coordenadas fuera de los límites físicos latitud/longitud: {suspicious_geo:,}; esta prueba no valida fronteras de Brasil ni exactitud geográfica.
+Artículos y pagos se sumaron por pedido; reseñas se promediaron. Las uniones 1:1 conservan los {len(joined):,} pedidos. La puntualidad excluye cancelaciones y entregas sin fechas completas. El dataset histórico no representa todo Brasil ni permite estimar margen.
 
-{markdown(integrity)}
+## Evidencia
 
-Las referencias se comprueban por fila, excluyendo claves nulas del conteo de referencias inexistentes. Detalles en [integridad_referencial.csv](tables/integridad_referencial.csv). Importes negativos de precio, flete o pago: {negative_money:,}; puntuaciones fuera de 1–5: {int((~reviews.review_score.between(1,5)).sum()):,}; duraciones de entrega negativas: {metrics['negative_delivery_days']:,}. Pagos con diferencia absoluta superior a BRL 0,05 respecto a precio más flete: {discrepancies:,} de {len(comparable):,} pedidos comparables. Es una discrepancia contable descriptiva, no prueba de fraude.
+[Métricas](metricas.json), [dimensiones](tables/dimensiones.csv), [calidad](tables/columnas_calidad.csv), [claves](tables/claves.csv), [referencias](tables/integridad_referencial.csv), [estadísticas](tables/estadisticas_numericas.csv) y [denominadores de correlación](tables/n_pares_correlacion.csv). [Entrega](figures/entrega.png), [pedidos mensuales](figures/pedidos_mensuales.png) y [precios](figures/precios.png).
 
-## Distribuciones y valores extremos
-
-Compras observadas desde {orders.order_purchase_timestamp.min()} hasta {orders.order_purchase_timestamp.max()}. Los extremos temporales pueden contener meses parciales; los conteos no miden crecimiento comparable ni demanda de todo Brasil.
-
-![Pedidos mensuales](figures/pedidos_mensuales.png)
-![Estados](figures/estados_pedido.png)
-
-Estadísticas de todas las columnas numéricas (N, media, desviación estándar, mediana, cuartiles, P95, P99 y extremos): [estadisticas_numericas.csv](tables/estadisticas_numericas.csv). Se señalan extremos fuera de Q1 − 1,5×IQR y Q3 + 1,5×IQR; no se borran ni se consideran errores por definición. En variables discretas o con IQR cero esta regla requiere cautela.
-
-Precio por artículo: mediana BRL {items.price.median():.2f}, media BRL {items.price.mean():.2f}, P99 BRL {items.price.quantile(.99):.2f}, máximo BRL {items.price.max():.2f}. Flete mediano BRL {items.freight_value.median():.2f}. La escala de conteos logarítmica permite mostrar la cola completa sin recortar precios.
-
-![Precios](figures/precios.png)
-
-Entre {len(delivered):,} pedidos entregados con fechas de compra, entrega y estimación disponibles, la mediana de entrega es {metrics['delivery_median']:.2f} días y P95 {metrics['delivery_p95']:.2f} días. {metrics['late_orders']:,} ({metrics['late_percent']:.2f}%) se entregaron después de la fecha estimada. Se compara la hora exacta con la estimación registrada (a menudo medianoche); no se presupone una tolerancia adicional.
-
-![Entrega](figures/entrega.png)
-![Reseñas](figures/resenas.png)
-
-## Relaciones entre variables
-
-Artículos y pagos se suman por pedido; reseñas se promedian por pedido. Cruces validados uno a uno conservan {len(joined):,} pedidos. Los pedidos sin artículos, pagos o reseñas conservan faltantes, no ceros. Precio representa suma de precios de líneas; flete suma por línea; pagos son registros de pago, no beneficio ni ingresos netos.
-
-{markdown(comparison.reset_index())}
-
-![Reseñas y demora](figures/resenas_demora.png)
-![Correlaciones](figures/correlaciones.png)
-
-Hallazgo: correlación de Spearman entre duración de entrega y puntuación media del pedido = {metrics['spearman_delivery_review']:.3f}. Correlaciones calculadas con casos completos por par, sin asumir igualdad de muestras; tamaños en [n_pares_correlacion.csv](tables/n_pares_correlacion.csv), coeficientes en [correlaciones_spearman.csv](tables/correlaciones_spearman.csv). Las relaciones entre importe de artículos y pagos tienen un componente contable esperado.
-
-Hipótesis: la experiencia de entrega podría estar relacionada con satisfacción. No se demuestra causalidad: categoría, vendedor, distancia, época y selección de quienes reseñan pueden influir en ambas variables. No se han estimado efectos causales, intervalos de confianza ni modelos predictivos.
-
-## Limitaciones y decisiones
-
-- Dataset histórico de una plataforma; no representa todo el comercio electrónico brasileño ni la situación actual.
-- Un cliente por pedido (`customer_id`) no equivale a una persona distinta; `customer_unique_id` permite reconocer recurrencia, sin garantizar identidad real.
-- Los faltantes de fechas y reseñas generan selección. Comparar puntualidad solo entre entregados con fechas completas excluye cancelaciones y pedidos en proceso.
-- Múltiples reseñas se promedian sin escoger arbitrariamente una. La geolocalización se perfila, pero no se utiliza para estimar distancias o deducir domicilios.
-- Las magnitudes monetarias se interpretan en BRL nominales; no se ajustan por inflación ni incluyen costos, impuestos o márgenes.
-- Los extremos se conservan; su legitimidad requiere contexto externo. Los prefijos postales no son coordenadas únicas.
-- El EDA describe asociaciones; no prueba significancia, representatividad ni causalidad.
-
-## Artefactos y comprobaciones
-
-Generados por `python scripts/eda.py`: ocho gráficos PNG, siete tablas de calidad/estadística más correlaciones y tamaños de pares, y [metricas.json](metricas.json). La descarga comprueba SHA-256, lista exacta de miembros y CRC del ZIP. Los cruces comprueban cardinalidad y conservación de pedidos. La comprobación independiente de archivos se ejecuta con `python scripts/validate.py`; sus resultados de la ejecución de referencia se registran en README.
+SHA-256 de la fuente: `{manifest['sha256']}`. Datos originales intactos y excluidos de Git.
 '''
     (OUT / 'informe_eda.md').write_text(text, encoding='utf-8')
     print(f'Informe generado: {OUT / "informe_eda.md"}; {len(joined):,} pedidos.')
