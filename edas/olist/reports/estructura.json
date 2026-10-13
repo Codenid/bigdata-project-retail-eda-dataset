@@ -1,0 +1,31 @@
+{
+  "pedidos": 99441,
+  "filas_union_detalles": 119143,
+  "clientes_unicos": 96096,
+  "identidades_varios_registros": 2997,
+  "prefijos_geo": 19015,
+  "prefijos_geo_varios": 17972,
+  "granularidad": [
+    {
+      "tabla": "order_items",
+      "pedidos": 99441,
+      "sin_detalle": 775,
+      "con_varios": 9803,
+      "max_registros": 21
+    },
+    {
+      "tabla": "order_payments",
+      "pedidos": 99441,
+      "sin_detalle": 1,
+      "con_varios": 2961,
+      "max_registros": 29
+    },
+    {
+      "tabla": "order_reviews",
+      "pedidos": 99441,
+      "sin_detalle": 768,
+      "con_varios": 547,
+      "max_registros": 3
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+determinante,atributo,grupos,grupos_multivalor
+InvoiceNo,CustomerID,25900,0
+InvoiceNo,Country,25900,0
+InvoiceNo,InvoiceDate,25900,43
+StockCode,Description,4070,1324
+StockCode,UnitPrice,4070,3603

@@ -1,5 +1,6 @@
 """EDA completo de las nueve tablas de Olist; no modifica datos originales."""
 import json
+import sys
 import platform
 from pathlib import Path
 
@@ -10,6 +11,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'reports'
+sys.path.insert(0, str(ROOT.parents[1] / 'scripts'))
+from estructura import informe, guardar, analizar_olist, analizar_retail
 TABLES = OUT / 'tables'
 FIGURES = OUT / 'figures'
 
@@ -208,7 +211,8 @@ Artículos y pagos se sumaron por pedido; reseñas se promediaron. Las uniones 1
 
 SHA-256 de la fuente: `{manifest['sha256']}`. Datos originales intactos y excluidos de Git.
 '''
-    (OUT / 'informe_eda.md').write_text(text, encoding='utf-8')
+    guardar('olist', analizar_olist(frames))
+    (OUT / 'informe_eda.md').write_text(informe('olist', text), encoding='utf-8')
     print(f'Informe generado: {OUT / "informe_eda.md"}; {len(joined):,} pedidos.')
 
 

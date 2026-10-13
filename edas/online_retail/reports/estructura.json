@@ -1,0 +1,35 @@
+{
+  "repeticiones_factura_producto": 10684,
+  "dependencias": [
+    {
+      "determinante": "InvoiceNo",
+      "atributo": "CustomerID",
+      "grupos": 25900,
+      "grupos_multivalor": 0
+    },
+    {
+      "determinante": "InvoiceNo",
+      "atributo": "Country",
+      "grupos": 25900,
+      "grupos_multivalor": 0
+    },
+    {
+      "determinante": "InvoiceNo",
+      "atributo": "InvoiceDate",
+      "grupos": 25900,
+      "grupos_multivalor": 43
+    },
+    {
+      "determinante": "StockCode",
+      "atributo": "Description",
+      "grupos": 4070,
+      "grupos_multivalor": 1324
+    },
+    {
+      "determinante": "StockCode",
+      "atributo": "UnitPrice",
+      "grupos": 4070,
+      "grupos_multivalor": 3603
+    }
+  ]
+}

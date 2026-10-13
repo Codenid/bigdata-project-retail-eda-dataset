@@ -1,5 +1,6 @@
 """EDA descriptivo de Online Retail; conserva el Excel y todas sus filas."""
 import json
+import sys
 import math
 from pathlib import Path
 import matplotlib
@@ -9,6 +10,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'reports'
+sys.path.insert(0, str(ROOT.parents[1] / 'scripts'))
+from estructura import informe, guardar, analizar_olist, analizar_retail
 
 
 def main():
@@ -99,7 +102,8 @@ SHA-256 de la fuente: `f5385cbb54bbebf7196389109c6b0621faab0c304e3702548165e71c8
 '''
     # El diagnóstico conserva granularidad por factura, pero publica únicamente sus frecuencias.
     consistency.value_counts().rename('facturas').to_csv(tables/'consistencia_facturas.csv')
-    (OUT/'informe_eda.md').write_text(report,encoding='utf-8')
+    guardar('online_retail', analizar_retail(df))
+    (OUT/'informe_eda.md').write_text(informe('online_retail', report),encoding='utf-8')
     print(json.dumps(m,indent=2))
 
 

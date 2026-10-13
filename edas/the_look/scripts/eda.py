@@ -1,6 +1,7 @@
 """Analiza exportaciones agregadas de BigQuery sin consultar el servicio."""
 import hashlib
 import json
+import sys
 from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
@@ -8,6 +9,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT.parents[1] / 'scripts'))
+from estructura import informe
 
 def es(n,d=0):
     return f'{n:,.{d}f}'.replace(',','_').replace('.',',').replace('_','.')
@@ -99,7 +102,7 @@ La estructura permite relacionar pedidos, usuarios y productos. Los importes dep
 
 Evidencia: [métricas](metricas.json), [relaciones](tables/relaciones.csv), [alertas temporales](tables/alertas_temporales.csv), [categorías](tables/categorias.csv), [países](tables/paises.csv) y [huellas de los CSV](fuentes.json). Gráficos: [categorías](figures/categorias.png), [países](figures/paises.png), [eventos](figures/eventos.png) y [pedidos mensuales](figures/pedidos_mensuales.png).
 '''
-    (out/'informe_eda.md').write_text(report,encoding='utf-8')
+    (out/'informe_eda.md').write_text(informe('the_look', report),encoding='utf-8')
     print(json.dumps(m,indent=2,ensure_ascii=False))
 
 if __name__=='__main__': main()

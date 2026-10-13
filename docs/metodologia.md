@@ -30,3 +30,13 @@ Online Retail conserva todas las filas, incluidos 5.268 duplicados adicionales. 
 ## The Look
 
 Analiza los tres CSV agregados de BigQuery en `edas/the_look/data/raw/`, sin consultar el servicio. Ejecutar `MPLCONFIGDIR=/tmp/eda-matplotlib python edas/the_look/scripts/eda.py` y `python edas/the_look/scripts/validate.py`; luego regenerar el README con `python scripts/informe_ejecutivo.py`. La validación comprueba las exportaciones, no los registros individuales del origen.
+
+## Lectura estructural y viabilidad
+
+Los informes usan siete secciones comunes. El README integra inventario, diagramas, reglas de unión, hallazgos y decisiones para permitir una lectura ejecutiva técnica sin abrir los tres informes. `scripts/estructura.py` genera esta presentación común a partir de resultados calculados; cada `eda.py` la aplica y `scripts/informe_ejecutivo.py` consolida el resumen.
+
+Olist publica `tables/granularidad.csv` y `estructura.json`: pedidos sin detalle, con varios registros y máximo por pedido; identidades recurrentes; multiplicidad postal; tamaño esperado de un LEFT JOIN de los tres detalles. Ese tamaño se calcula multiplicando los conteos por pedido, con mínimo uno por detalle; no se materializa ni se usa ese cruce para métricas comerciales.
+
+Online Retail publica `tables/dependencias.csv` y `estructura.json`: repeticiones de factura–producto y grupos con más de un valor de cliente, país, fecha, descripción o precio. Los nulos cuentan como un valor en esta prueba. Se comprueban dependencias observadas, sin certificar formas normales ni efectuar una migración. Ambos validadores recalculan los diagnósticos desde las fuentes originales.
+
+La normalización propuesta distingue registros originales de entidades conceptuales. Una futura capa analítica conserva hechos a su granularidad: pedido, línea, pago, reseña o evento; cada medida debe indicar población, estado, período y unidad monetaria. No se suman atributos de cabecera repetidos por un enlace de detalle. The Look mantiene el alcance de validación sobre exportaciones agregadas.

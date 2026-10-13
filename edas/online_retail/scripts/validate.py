@@ -25,6 +25,15 @@ def main():
     for key,value in checks.items():
         if not math.isclose(m[key],value,rel_tol=1e-10,abs_tol=1e-6):
             raise ValueError(f'Métrica inconsistente: {key}')
+    structure=json.loads((ROOT/'reports/estructura.json').read_text())
+    assert structure['repeticiones_factura_producto'] == len(df)-len(df.drop_duplicates(['InvoiceNo','StockCode']))
+    dependencies=pd.read_csv(ROOT/'reports/tables/dependencias.csv')
+    for row in dependencies.to_dict('records'):
+        values=df[[row['determinante'], row['atributo']]].drop_duplicates()
+        counts=values.groupby(row['determinante'], dropna=False).size()
+        assert row['grupos']==len(counts)
+        assert row['grupos_multivalor']==int((counts>1).sum())
+    assert dependencies.to_dict('records') == structure['dependencias']
     quality=pd.read_csv(ROOT/'reports/tables/calidad.csv').set_index('columna')
     for c in df:
         assert quality.loc[c,'faltantes']==df[c].isna().sum(), c

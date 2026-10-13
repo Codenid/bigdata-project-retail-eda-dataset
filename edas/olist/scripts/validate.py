@@ -45,6 +45,24 @@ def main():
     late = dates.order_delivered_customer_date > dates.order_estimated_delivery_date
     if metrics['total_orders'] != len(orders) or metrics['delivered_complete'] != int(eligible.sum()) or metrics['late_orders'] != int((eligible & late).sum()):
         raise ValueError('Métricas de pedidos inconsistentes con los CSV originales.')
+    structure = json.loads((ROOT / 'reports/estructura.json').read_text())
+    count_columns = []
+    for name in ('order_items', 'order_payments', 'order_reviews'):
+        detail = pd.read_csv(ROOT / f'data/raw/olist_{name}_dataset.csv', dtype={'order_id': 'string'})
+        counts = orders[['order_id']].merge(detail.groupby('order_id').size().rename('n'),
+                                           on='order_id', how='left', validate='one_to_one').n.fillna(0).astype(int)
+        expected = next(row for row in structure['granularidad'] if row['tabla'] == name)
+        assert expected['sin_detalle'] == int((counts == 0).sum())
+        assert expected['con_varios'] == int((counts > 1).sum())
+        assert expected['max_registros'] == int(counts.max())
+        count_columns.append(counts.clip(lower=1))
+    assert structure['filas_union_detalles'] == int(pd.concat(count_columns, axis=1).prod(axis=1).sum())
+    customers = pd.read_csv(ROOT/'data/raw/olist_customers_dataset.csv', dtype='string')
+    assert structure['clientes_unicos'] == customers.customer_unique_id.nunique()
+    assert structure['identidades_varios_registros'] == int(customers.customer_unique_id.value_counts().gt(1).sum())
+    geo = pd.read_csv(ROOT/'data/raw/olist_geolocation_dataset.csv', dtype={'geolocation_zip_code_prefix': 'string'})
+    assert structure['prefijos_geo'] == geo.geolocation_zip_code_prefix.nunique()
+    assert structure['prefijos_geo_varios'] == int(geo.geolocation_zip_code_prefix.value_counts().gt(1).sum())
     print(f'OK: {len(local)} enlaces locales, 8 PNG decodificables, 9 tablas contrastadas y métricas de pedidos recalculadas.')
 
 

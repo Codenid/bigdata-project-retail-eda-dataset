@@ -1,0 +1,4 @@
+tabla,pedidos,sin_detalle,con_varios,max_registros
+order_items,99441,775,9803,21
+order_payments,99441,1,2961,29
+order_reviews,99441,768,547,3
